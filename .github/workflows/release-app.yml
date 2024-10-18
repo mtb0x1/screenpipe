@@ -50,21 +50,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: "macos-latest" # for Arm based macs (M1 and above).
-            args: "--target aarch64-apple-darwin --features metal,beta"
-            target: aarch64-apple-darwin
-            tauri-args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest" # for Intel based macs.
-            args: "--target x86_64-apple-darwin --features metal,beta"
-            target: x86_64-apple-darwin
-            tauri-args: "--target x86_64-apple-darwin"
           - platform: "ubuntu-22.04" # Ubuntu x86_64
             args: "" # TODO CUDA, mkl
             tauri-args: ""
-          - platform: "windows-latest" # Windows x86_64
-            args: "--target x86_64-pc-windows-msvc" # TODO CUDA, mkl?  --features "openblas"
-            pre-build-args: "" # --openblas
-            tauri-args: "--target x86_64-pc-windows-msvc"
+ 
           # windows arm: https://github.com/ahqsoftwares/tauri-ahq-store/blob/2fbc2103c222662b3c6ee0cd71fcde664824f0ef/.github/workflows/publish.yml#L136
 
     runs-on: ${{ matrix.platform }}
@@ -237,9 +226,17 @@ jobs:
           projectPath: "./screenpipe-app-tauri"
           tauriScript: bunx tauri -v
 
-      - name: Upload Assets to CrabNebula Cloud
-        uses: crabnebula-dev/cloud-release@v0
+      #- name: Upload Assets to CrabNebula Cloud
+      #  uses: crabnebula-dev/cloud-release@v0
+      #  with:
+      #    command: release upload ${{ secrets.CN_APP_SLUG }} --framework tauri
+      #    api-key: ${{ secrets.CN_API_KEY }}
+      #    path: ./screenpipe-app-tauri/src-tauri
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          command: release upload ${{ secrets.CN_APP_SLUG }} --framework tauri
-          api-key: ${{ secrets.CN_API_KEY }}
-          path: ./screenpipe-app-tauri/src-tauri
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./screenpipe-app-tauri/src-tauri/target/release/bundle/appimage/*_0.5.97_amd64.AppImage
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
