@@ -87,7 +87,7 @@ async fn main() {
             _ => {}
         })
         .plugin(tauri_plugin_os::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
+        //.plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_shell::init())
@@ -107,7 +107,7 @@ async fn main() {
                 .set_focus()
                 .expect("Can't focus window!");
         }))
-        .plugin(tauri_plugin_updater::Builder::new().build())
+        //.plugin(tauri_plugin_updater::Builder::new().build())
         .manage(sidecar_state)
         .invoke_handler(tauri::generate_handler![
             spawn_screenpipe,
