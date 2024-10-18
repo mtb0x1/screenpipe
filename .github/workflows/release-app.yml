@@ -8,16 +8,7 @@ name: Release App
 
 on:
   push:
-    tags:
-      - "v*"
-  workflow_dispatch:
-    inputs:
-      commit_hash:
-        description: "Commit hash to build from (optional)"
-        required: false
-      version:
-        description: "Version to set in Cargo.toml (required if commit_hash is provided)"
-        required: false
+  pull_request:
 
 jobs:
   draft:
